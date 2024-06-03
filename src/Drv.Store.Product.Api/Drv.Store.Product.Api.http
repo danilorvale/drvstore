@@ -1,0 +1,6 @@
+@Drv.Store.Product.Api_HostAddress = http://localhost:5197
+
+GET {{Drv.Store.Product.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

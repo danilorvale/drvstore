@@ -1,0 +1,53 @@
+﻿services:
+  drv-store-product-api:
+    image: ${DOCKER_REGISTRY-}drv-store-product-api
+    container_name: Drv.Store.Product.Api
+    build:
+      context: .
+      dockerfile: src/Drv.Store.Product.Api/Dockerfile
+    ports:
+      - "5001:8080"
+
+  drv-store-order-api:
+    image: ${DOCKER_REGISTRY-}drv-store-order-api
+    container_name: Drv.Store.Order.Api
+    build:
+      context: .
+      dockerfile: src/Drv.Store.Order.Api/Dockerfile
+    ports:
+      - "6001:8080"
+
+  product-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: Drv.Product.Db
+    volumes:
+      - ./.containers/database/product:/var/opt/mssql/data
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "SenhaForte_123!"
+
+  order-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: Drv.Order.Db
+    volumes:
+      - ./.containers/database/order:/var/opt/mssql/data
+    ports:
+      - "1434:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "SenhaForte_123!"
+
+  drv-mq:
+    image: rabbitmq:management
+    container_name: Drv.Store.RabbitMq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./.containers/queue/data/:/var/lib/rabbitmq
+      - ./.containers/queue/log/:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
